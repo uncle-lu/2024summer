@@ -1,0 +1,19 @@
+{% extends "base_posts.html" %}
+
+{% block title %}{{ post.title if post else '' }} Edit{% endblock %}
+
+{% block main_content %}
+<form class="w-100" method="post">
+    <label class="form-label">Title</label>
+    <input type="text" class="form-control" name="title" value="{{ post.title if post else '' }}" placeholder="Enter title here">
+    <label class="form-label">Body</label>
+    <textarea id="markdown-editor" name="body">{{ post.body if post else '' }}</textarea>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}
+
+{% block script %}
+<script>
+    var easyMDE = new EasyMDE({ element: document.getElementById('markdown-editor') });
+</script>
+{% endblock %}

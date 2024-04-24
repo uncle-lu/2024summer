@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="page-pretitle">
+                        Overview
+                    </div>
+                    <h2 class="page-title">
+                        发布代码比对
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="m-3">
+                <form method="POST">
+                    <div>
+                        <label for="user_id">Select User:</label>
+                        <select class="form-select" name="user_id">
+                            {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="old_code">Old Code:</label>
+                        <textarea class="form-control" name="old_code" required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label" for="new_code">New Code:</label>
+                        <textarea class="form-control" name="new_code" required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label" for="description">Description:</label>
+                        <input class="form-control" name="description" required></input>
+                    </div>
+                    <button class="btn btn-success" type="submit">Publish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

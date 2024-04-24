@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block headlink %}
+<script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js/styles/github.css">
+<script src="https://cdn.jsdelivr.net/npm/highlight.js/lib/highlight.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="page-pretitle">
+                        Overview
+                    </div>
+                    <h2 class="page-title">
+                        代码比对列表
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-3">
+                    <div class="list-group list-group-flush">
+                        {% for diff in code_diffs %}
+                        <a class="list-group-item list-group-item-action text-reset d-block"
+                            href="{{ url_for('main.view_code_diffs', diff_id=diff.id) }}">{{ diff.timestamp }}-{{
+                            diff.description }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-9">
+                    {% if selected_diff %}
+                    <div id="diff-container"></div>
+                    {% else %}
+                    <p>在左侧选择一个收到的代码比较</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% if selected_diff %}
+<script>
+var diffString = `{{ diff_html|safe }}`;
+var targetElement = document.getElementById('diff-container');
+var diff2htmlUi = new Diff2HtmlUI(targetElement, diffString, {
+    drawFileList: false,
+    matching: 'lines',
+    outputFormat: 'side-by-side',
+    synchronisedScroll: true,
+});
+diff2htmlUi.draw();
+diff2htmlUi.highlightCode();
+hljs.initHighlightingOnLoad();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/tabler.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    {% block headlink %} 
+    {% endblock %}
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <header class="navbar navbar-expand-md navbar-light d-print-none">
+        <div class="container-xl">
+          <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+              <ul class="navbar-nav">
+                {% if user %}
+                <li class="nav-item">
+                      <span class="nav-link-title">
+                          {{ user.username }}
+                      </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" >
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <img src="/static/logout.svg">
+                      </span>
+                      <span class="nav-link-title">
+                        登出
+                      </span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" >
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <img src="/static/login.svg">
+                      </span>
+                      <span class="nav-link-title">
+                        登录
+                      </span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/" >
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                        <img src="/static/home.svg">
+                    </span>
+                    <span class="nav-link-title">
+                        首页
+                    </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/posts" >
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <img src="/static/notebook.svg">
+                      </span>
+                      <span class="nav-link-title">
+                        博客
+                      </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/code_diffs" >
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <img src="/static/code.svg">
+                      </span>
+                      <span class="nav-link-title">
+                        代码比对列表
+                      </span>
+                    </a>
+                </li>
+                {% if user and user.is_admin() %} 
+                <li class="nav-item">
+                    <a class="nav-link" href="/publish" >
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <img src="./static/code.svg">
+                      </span>
+                      <span class="nav-link-title">
+                        发布比对
+                      </span>
+                    </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+    </header>
+    {% block content %}{% endblock %}
+</body>
+<script>
+    setTimeout(function() {
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages) {
+            flashMessages.style.display = 'none';
+        }
+    }, 1000);
+</script>
+<script src="/static/tabler.min.js"></script>
+{% block script %}
+{% endblock %}
+</html>
