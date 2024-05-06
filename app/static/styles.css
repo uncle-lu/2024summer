@@ -15,3 +15,22 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
 }
+
+.my-handle, .post-a {
+    display: inline;
+}
+
+.editor-toolbar button{
+    color: black;
+}
+
+@media (min-width: 576px) {
+  main .grid {
+    grid-column-gap: var(1em);
+    grid-template-columns: 20% auto;
+  }
+}
+
+nav {
+  margin-bottom: 0.6em;
+}

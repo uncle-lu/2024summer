@@ -8,44 +8,31 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-wrapper">
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        Overview
-                    </div>
-                    <h2 class="page-title">
-                        代码比对列表
-                    </h2>
+<main class="container">
+    <div class="grid">
+        <aside class="pico">
+            <h3>代码比对列表</h3>
+            <ul>
+            {% for diff in code_diffs %}
+            <li>
+                <a class="list-group-item list-group-item-action text-reset d-block" href="{{ url_for('main.view_code_diffs', diff_id=diff.id) }}">{{ diff.description }}</a>
+            </li>
+            {% endfor %}
+            </ul>
+        </aside>
+        <section>
+            {% if selected_diff %}
+                <div class="pico">
+                    <h1>{{ selected_diff.timestamp }}</h1>
+                    <p>{{ selected_diff.description }}</p>
                 </div>
-            </div>
-        </div>
+                <div id="diff-container"></div>
+            {% else %}
+                <p>在左侧选择一个收到的代码比较</p>
+            {% endif %}
+        </section>
     </div>
-    <div class="page-body">
-        <div class="container-xl">
-            <div class="row">
-                <div class="col-3">
-                    <div class="list-group list-group-flush">
-                        {% for diff in code_diffs %}
-                        <a class="list-group-item list-group-item-action text-reset d-block"
-                            href="{{ url_for('main.view_code_diffs', diff_id=diff.id) }}">{{ diff.timestamp }}-{{
-                            diff.description }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-9">
-                    {% if selected_diff %}
-                    <div id="diff-container"></div>
-                    {% else %}
-                    <p>在左侧选择一个收到的代码比较</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</main>
 {% endblock %}
 
 {% block script %}

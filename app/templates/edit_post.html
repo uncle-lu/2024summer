@@ -3,17 +3,23 @@
 {% block title %}{{ post.title if post else '' }} Edit{% endblock %}
 
 {% block main_content %}
-<form class="w-100" method="post">
-    <label class="form-label">Title</label>
-    <input type="text" class="form-control" name="title" value="{{ post.title if post else '' }}" placeholder="Enter title here">
-    <label class="form-label">Body</label>
+<form method="post">
+    <div class="pico">
+        <label>Title</label>
+        <input type="text" name="title" value="{{ post.title if post else '' }}" placeholder="Enter title here" />
+        <label>Body</label>
+    </div>
     <textarea id="markdown-editor" name="body">{{ post.body if post else '' }}</textarea>
-    <button type="submit" class="btn btn-success">Save</button>
+    <div class="pico">
+        <button type="submit" class="pico">Save</button>
+    </div>
 </form>
 {% endblock %}
 
 {% block script %}
 <script>
-    var easyMDE = new EasyMDE({ element: document.getElementById('markdown-editor') });
+var easyMDE = new EasyMDE({
+     element: document.getElementById('markdown-editor'),
+     });
 </script>
 {% endblock %}

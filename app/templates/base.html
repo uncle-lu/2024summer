@@ -6,7 +6,7 @@
     <title>{% block title %}My Blog{% endblock %}</title>
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="/static/pico.css">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     {% block headlink %} 
     {% endblock %}
 </head>
@@ -20,13 +20,15 @@
             </div>
         {% endif %}
     {% endwith %}
-    <header class="container">
+    <header class="container pico">
       <nav>
         <ul>
           <li><a href="/" class="contrast"><strong>2024 Summer</strong></a></li>
           <li><a href="/posts" >博客</a></li>
-          <li><a href="/code_diffs" >代码比对列表</a></li>
+          <li><a href="/code_diffs" >代码比对</a></li>
+          {% if user and user.is_admin() %} 
           <li><a href="/publish" >发布比对</a></li>
+          {% endif %}
         </ul>
         <ul>
           {% if user %}

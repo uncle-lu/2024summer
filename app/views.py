@@ -100,14 +100,14 @@ def edit_post(post_id):
 @bp.route('/code_diffs')
 @login_required
 def view_code_diffs():
-    code_diffs = CodeDistribution.query.filter_by(user_id=current_user.id).all()
+    code_diffs = CodeDistribution.query.filter_by(user_id=current_user.id).order_by(CodeDistribution.timestamp).all()
     selected_diff = None
     diff_html = None
     diff_id = request.args.get('diff_id')
     if diff_id:
         selected_diff = CodeDistribution.query.filter_by(id=diff_id, user_id=current_user.id).first()
         if selected_diff :
-            diff = diff = difflib.unified_diff(
+            diff = difflib.unified_diff(
                 selected_diff.old_code.splitlines(keepends=True),
                 selected_diff.new_code.splitlines(keepends=True),
                 fromfile='old_code.cpp', tofile='new_code.cpp', lineterm='',

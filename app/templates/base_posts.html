@@ -9,70 +9,39 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 {% endblock %}
 
-{% block content %}
-<div class="page-wrapper">
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        Overview
-                    </div>
-                    <h2 class="page-title">
-                        博客
-                    </h2>
+{% block content%}
+<main class="container">
+    <div class="grid">
+        <aside class="pico">
+            <h3>文章列表</h3>
+            <div id="posts-list">
+                {% for post in posts %}
+                <div class="post-item" data-id="{{ post.id }}">
+                    <span class="my-handle">
+                        <img src="/static/arrows-move.svg">
+                    </span>
+                    <a class="post-a" href="{{ url_for('main.posts', post_id=post.id) }}">{{ post.title }}</a>
                 </div>
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="{{ url_for('main.create_post') }}" class="btn btn-primary d-none d-sm-inline-block">
-                            Create new Blog
-                        </a>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
-        </div>
-    </div>
-    <div class="page-body">
-        <div class="container-xl">
-            <div class="row row-deck">
-                <div class="col-3">
-                    <div class="list-group list-group-flush w-100" id="posts-list">
-                        {% for post in posts %}
-                        <div class="post-preview list-group-item list-group-item-action w-100" data-id="{{ post.id }}">
-                            <div class="row">
-                                <div class="col-auto">
-                                    <span class="my-handle">
-                                        <img src="/static/arrows-move.svg">
-                                    </span>
-                                </div>
-                                <div class="col-auto">
-                                    <a class="text-reset dJblock" href="{{ url_for('main.posts', post_id=post.id) }}">{{ post.title }}</a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
+        </aside>
+        <section>
+            {% block main_content %}
+                {% if selected_post %}
+                <div class="pico">
+                    <h1>{{ selected_post.title }}</h1>
+                    <textarea id="markdown-content" style="display:none;">{{ selected_post.body }}</textarea>
+                    <article id="markdown-view"></article>
+                    <a href="{{ url_for('main.edit_post', post_id=selected_post.id) }}" class="btn btn-secondary">Edit</a>
                 </div>
-                <div class="col-9">
-                    {% block main_content %}
-                    <div class="main-content">
-                        {% if selected_post %}
-                        <h1>{{ selected_post.title }}</h1>
-                        <textarea id="markdown-content" style="display:none;">{{ selected_post.body }}</textarea>
-                        <div id="markdown-view"></div>
-                        <a href="{{ url_for('main.edit_post', post_id=selected_post.id) }}"
-                            class="btn btn-secondary">Edit</a>
-                        {% else %}
-                        <h1>为什么要写博客？</h1>
-                        <p>信息学奥赛是一门「数学」、「编码」集合一体的体育竞赛。所以在学习的过程中总结与复习是非常重要的。写博客或者说写总结就是一个反思与复习的过程。</p>
-                        {% endif %}
-                    </div>
-                    {% endblock %}
-                </div>
-            </div>
-        </div>
+                {% else %}
+                <h1>为什么要写博客？</h1>
+                <p>信息学奥赛是一门「数学」、「编码」集合一体的体育竞赛。所以在学习的过程中总结与复习是非常重要的。写博客或者说写总结就是一个反思与复习的过程。</p>
+                {% endif %}
+            {% endblock %}
+        </section>
     </div>
-</div>
+</main>
 {% endblock %}
 
 {% block script %}
@@ -83,7 +52,7 @@
         onEnd: function (evt) {
             var order = [];
             var itemEl = evt.item;  // 拖拽的HTML元素
-            document.querySelectorAll('.post-preview').forEach(function (element) {
+            document.querySelectorAll('.post-item').forEach(function (element) {
                 order.push(element.getAttribute('data-id'));
             });
 
