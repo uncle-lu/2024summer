@@ -13,7 +13,9 @@
 <main class="container">
     <div class="grid">
         <aside class="pico">
-            <h3>文章列表</h3>
+            <a href="{{ url_for('main.create_post') }}">创建新文章</a>
+            <hr />
+            <h3>博文列表</h3>
             <div id="posts-list">
                 {% for post in posts %}
                 <div class="post-item" data-id="{{ post.id }}">
