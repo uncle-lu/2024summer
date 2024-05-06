@@ -1,46 +1,28 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Sign in</title>
-    <link href="/static/tabler.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/static/styles.css">
-  </head>
-  <body class=" border-top-wide border-primary d-flex flex-column">
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for message in messages %}
-                    <div>{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    <div class="page page-center">
-      <div class="container container-tight py-4">
-        <div class="text-center mb-4">
-          <a href="." class="navbar-brand navbar-brand-autodark"><img src="./static/logo.svg" height="36" alt=""></a>
-        </div>
-        <div class="card card-md">
-          <div class="card-body">
-            <h2 class="h2 text-center mb-4">Login to your account</h2>
-            <form action="{{ url_for('main.login') }}" method="post">
-              {{ form.hidden_tag() }}
-              <p>
-                {{ form.username.label(class="form-label") }}
-                {{ form.username(size=32, class="form-control w-100") }}
-              </p>
-              <p>
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(size=32, class="form-control w-100") }}
-              </p>
-              <p>{{ form.submit(class="btn btn-primary w-100") }}</p>
-            </form>
-          </div>
-        </div>
-      </div>
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<main class="container">
+  <article class="grid">
+    <div>
+      <hgroup>
+        <h1>登录</h1>
+        <p>请登录 2024 Summer 系统</p>
+      </hgroup>
+      <form action="{{ url_for('main.login') }}" method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+          {{ form.username.label() }}
+          {{ form.username() }}
+        </p>
+        <p>
+          {{ form.password.label() }}
+          {{ form.password() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+      </form>
     </div>
-  </body>
-</html>
+  </article>
+</main>
+{% endblock %}
