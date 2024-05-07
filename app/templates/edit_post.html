@@ -1,6 +1,6 @@
 {% extends "base_posts.html" %}
 
-{% block title %}{{ post.title if post else '' }} Edit{% endblock %}
+{% block title %}{{ post.title if post else 'New' }} Edit{% endblock %}
 
 {% block main_content %}
 <form method="post">

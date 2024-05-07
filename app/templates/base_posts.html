@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}{{ selected_post.title }} - My Blog{% endblock %}
+{% block title %}
+{% if selected_post %}
+{{ selected_post.title }}
+{% else %}
+博客列表
+{% endif%}
+{% endblock %}
 
 {% block headlink %}
 <script src="/static/Sortable.min.js"></script>
