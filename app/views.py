@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify, current_app
+from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify, current_app, abort, send_file
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 from .models import User, Post, CodeDistribution, Task, FileUpload
@@ -124,6 +124,21 @@ def list_tasks():
     for task in tasks:
         task.upload = FileUpload.query.filter_by(task_id=task.id, user_id=current_user.id).first()
     return render_template('tasks.html', tasks=tasks)
+
+@bp.route('/download_file/<int:file_id>')
+@login_required
+def download_file(file_id):
+    file = FileUpload.query.get_or_404(file_id)
+    if file.user_id != current_user.id:
+        abort(403)
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
+    if not os.path.exists(file_path):
+        abort(404, description=f"File not found. {file_path}")
+    try:
+        return send_file(file_path, as_attachment=True, download_name=file.filename)
+    except Exception as e:
+        abort(500, description=str(e))
+
 
 @bp.route('/tasks/<int:task_id>/upload', methods=['GET', 'POST'])
 @login_required

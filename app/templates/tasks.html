@@ -19,7 +19,7 @@
                 <th scope="col">任务名称</th>
                 <th scope="col">任务描述</th>
                 <th scope="col">状态</th>
-                <th scope="col">上传</th>
+                <th scope="col">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -34,7 +34,7 @@
                 {% endif %}
                 <td>
                     <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">
-                        上传
+                      操作
                     </button>
                 </td>
             </tr>
@@ -53,6 +53,12 @@
             ></button>
             <h3>{{ task.title }} - 上传操作</h3>
           </header>
+          {% if task.upload %}
+          <h3>下载</h3>
+          <p>该任务已经上传</p>
+          <a href="{{ url_for('main.download_file', file_id=task.upload.id) }}">{{ task.upload.filename }}</a>
+          {% endif %}
+          <h3>上传</h3>
           <form action="{{ url_for('main.upload_file', task_id=task.id) }}" method="post" enctype="multipart/form-data">
             <fieldset class="grid" role="group">
                 <input type="file" name="file">
