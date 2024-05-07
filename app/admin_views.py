@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, g
+from flask import Blueprint, render_template, request, redirect, url_for, flash, g, abort, jsonify
 from flask_login import login_required, current_user
-from .models import User, CodeDistribution, Role, Task
+from .models import User, CodeDistribution, Role, Task, FileUpload
 from .forms import TaskForm
 from .extensions import db
 from datetime import datetime, timezone
@@ -45,7 +45,7 @@ def publish_code():
     users = User.query.all()
     return render_template('publish_code.html', users=users)
 
-@admin_bp.route('/tasks/new', methods=['GET', 'POST'])
+@admin_bp.route('/admin/tasks/new', methods=['GET', 'POST'])
 @login_required
 def new_task():
     if not current_user.role == Role.ADMIN:
@@ -58,3 +58,38 @@ def new_task():
         flash('Task has been created', 'success')
         return redirect(url_for('main.list_tasks'))
     return render_template('create_task.html', form=form)
+
+@admin_bp.route('/admin/tasks')
+@login_required
+def list_tasks():
+    if not current_user.role == Role.ADMIN:
+        return redirect(url_for('main.index'))
+    tasks = Task.query.all()
+    users = User.query.all()
+    for task in tasks:
+        task.uploads = []
+        for user in users:
+            task.uploads.append({
+                "user": user,
+                "isload": FileUpload.query.filter_by(task_id=task.id, user_id=user.id).first()
+                })
+        task.upload = FileUpload.query.filter_by(task_id=task.id, user_id=current_user.id).first()
+    return render_template('admin_tasks.html', tasks=tasks)
+
+@admin_bp.route('/toggle_task_active/<int:task_id>', methods=['POST'])
+@login_required
+def toggle_task_active(task_id):
+    if not current_user.role == Role.ADMIN:
+        abort(403)  # 确保只有管理员可以更改任务状态
+
+    task = Task.query.get_or_404(task_id)
+    new_status = request.form.get('is_active') == '1'  # 前端发送1表示激活，0表示不激活
+    task.is_active = bool(new_status)
+    db.session.commit()
+
+    return jsonify({
+        'status': 'success',
+        'message': 'Task status updated',
+        'task_id': task_id,
+        'is_active': task.is_active
+    })

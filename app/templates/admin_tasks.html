@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}任务列表{% endblock %}
+
+{% block headlink %}
+<script src="/static/modal.js"></script>
+{% endblock %}
+
+{% block content %}
+<main class="container pico">
+    <h1>管理列表</h1>
+    <a href="{{ url_for('myadmin.new_task') }}">创建新任务</a>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">任务名称</th>
+                <th scope="col">任务描述</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                {% if task.upload %}
+                    <td>已上传</td>
+                {% else%}
+                    <td>未上传</td>
+                {% endif %}
+                <td>
+                    <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">
+                      操作
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for task in tasks %}
+    <dialog id="{{ task.id }}">
+        <article>
+          <header>
+            <button
+              aria-label="Close"
+              rel="prev"
+              data-target="{{ task.id }}"
+              onclick="toggleModal(event)"
+            ></button>
+            <h3>{{ task.title }} - 管理操作</h3>
+          </header>
+          <p>用户状态：</p>
+          <table>
+            <thead>
+                <tr>
+                    <th scope="col">用户名称</th>
+                    <th scope="col">情况</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in task.uploads %}
+            <tr>
+                <td> {{ item['user'].username }} </td>
+                <td>
+                {% if item['isload'] %}
+                    已经上传
+                {% else %}
+                    未上传
+                {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+          <p>修改任务状态：</p>
+          <form action="{{ url_for('myadmin.toggle_task_active', task_id=task.id) }}" method="post">
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+            <input type="checkbox" role="switch" name="is_active" {{ 'checked' if task.is_active else '' }}>
+            <span>启用</span>
+          </form>
+          <footer>
+            <button
+              role="button"
+              class="secondary"
+              data-target="{{ task.id }}"
+              onclick="toggleModal(event)"
+            >
+              Cancel</button
+            >
+          </footer>
+        </article>
+      </dialog>
+    {% endfor %}
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+document.querySelectorAll('input[type="checkbox"][name="is_active"]').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        const taskId = this.closest('form').querySelector('input[name="task_id"]').value;
+        const isActive = this.checked ? 1 : 0;
+        fetch(`{{ url_for('myadmin.toggle_task_active', task_id=0) }}`.replace('/0', '/' + taskId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `is_active=${isActive}`
+        }).then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+                console.log('Task status updated successfully.');
+            } else {
+                console.error('Failed to update task status.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

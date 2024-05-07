@@ -8,75 +8,70 @@
 
 {% block content %}
 <main class="container pico">
-    <h1>任务列表</h1>
-    {% if user and user.is_admin() %}
-    <a href="{{ url_for('myadmin.new_task') }}">创建新任务</a>
-    {% endif %}
-    <p>按照课程进度发布上传任务，请及时上传。</p>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">任务名称</th>
-                <th scope="col">任务描述</th>
-                <th scope="col">状态</th>
-                <th scope="col">操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.title }}</td>
-                <td>{{ task.description }}</td>
-                {% if task.upload %}
-                    <td>已上传</td>
-                {% else%}
-                    <td>未上传</td>
-                {% endif %}
-                <td>
-                    <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">
-                      操作
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% for task in tasks %}
-    <dialog id="{{ task.id }}">
-        <article>
-          <header>
-            <button
-              aria-label="Close"
-              rel="prev"
-              data-target="{{ task.id }}"
-              onclick="toggleModal(event)"
-            ></button>
-            <h3>{{ task.title }} - 上传操作</h3>
-          </header>
-          {% if task.upload %}
-          <h3>下载</h3>
-          <p>该任务已经上传</p>
-          <a href="{{ url_for('main.download_file', file_id=task.upload.id) }}">{{ task.upload.filename }}</a>
+  <h1>任务列表</h1>
+  {% if user and user.is_admin() %}
+  <a href="{{ url_for('myadmin.list_tasks') }}">管理任务</a>
+  {% endif %}
+  <p>按照课程进度发布上传任务，请及时上传。</p>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">任务名称</th>
+        <th scope="col">任务描述</th>
+        <th scope="col">状态</th>
+        <th scope="col">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        {% if task.upload %}
+        <td>已上传</td>
+        {% else%}
+        <td>未上传</td>
+        {% endif %}
+        <td>
+          {% if task.is_active %}
+          <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">
+            操作
+          </button>
+          {% else %}
+          任务已结束
           {% endif %}
-          <h3>上传</h3>
-          <form action="{{ url_for('main.upload_file', task_id=task.id) }}" method="post" enctype="multipart/form-data">
-            <fieldset class="grid" role="group">
-                <input type="file" name="file">
-                <input type="submit">
-            </fieldset>
-          </form>
-          <footer>
-            <button
-              role="button"
-              class="secondary"
-              data-target="{{ task.id }}"
-              onclick="toggleModal(event)"
-            >
-              Cancel</button
-            >
-          </footer>
-        </article>
-      </dialog>
-    {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% for task in tasks %}
+  {% if task.is_active %}
+  <dialog id="{{ task.id }}">
+    <article>
+      <header>
+        <button aria-label="Close" rel="prev" data-target="{{ task.id }}" onclick="toggleModal(event)"></button>
+        <h3>{{ task.title }} - 上传操作</h3>
+      </header>
+      {% if task.upload %}
+      <h3>下载</h3>
+      <p>该任务已经上传</p>
+      <a href="{{ url_for('main.download_file', file_id=task.upload.id) }}">{{ task.upload.filename }}</a>
+      {% endif %}
+      <h3>上传</h3>
+      <form action="{{ url_for('main.upload_file', task_id=task.id) }}" method="post" enctype="multipart/form-data">
+        <fieldset class="grid" role="group">
+          <input type="file" name="file">
+          <input type="submit">
+        </fieldset>
+      </form>
+      <footer>
+        <button role="button" class="secondary" data-target="{{ task.id }}" onclick="toggleModal(event)">
+          Cancel</button>
+      </footer>
+    </article>
+  </dialog>
+  {% endif %}
+  {% endfor %}
 </main>
 {% endblock %}
