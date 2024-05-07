@@ -2,6 +2,10 @@
 
 {% block title %}任务列表{% endblock %}
 
+{% block headlink %}
+<script src="/static/modal.js"></script>
+{% endblock %}
+
 {% block content %}
 <main class="container pico">
     <h1>任务列表</h1>
@@ -14,18 +18,59 @@
             <tr>
                 <th scope="col">任务名称</th>
                 <th scope="col">任务描述</th>
+                <th scope="col">状态</th>
                 <th scope="col">上传</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in tasks %}
+            {% for task in tasks %}
             <tr>
-                <td>{{ item.title }}</td>
-                <td>{{ item.description }}</td>
-                <td>上传</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                {% if task.upload %}
+                    <td>已上传</td>
+                {% else%}
+                    <td>未上传</td>
+                {% endif %}
+                <td>
+                    <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">
+                        上传
+                    </button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% for task in tasks %}
+    <dialog id="{{ task.id }}">
+        <article>
+          <header>
+            <button
+              aria-label="Close"
+              rel="prev"
+              data-target="{{ task.id }}"
+              onclick="toggleModal(event)"
+            ></button>
+            <h3>{{ task.title }} - 上传操作</h3>
+          </header>
+          <form action="{{ url_for('main.upload_file', task_id=task.id) }}" method="post" enctype="multipart/form-data">
+            <fieldset class="grid" role="group">
+                <input type="file" name="file">
+                <input type="submit">
+            </fieldset>
+          </form>
+          <footer>
+            <button
+              role="button"
+              class="secondary"
+              data-target="{{ task.id }}"
+              onclick="toggleModal(event)"
+            >
+              Cancel</button
+            >
+          </footer>
+        </article>
+      </dialog>
+    {% endfor %}
 </main>
 {% endblock %}

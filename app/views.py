@@ -1,9 +1,10 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify
+from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify, current_app
 from flask_login import current_user, login_user, login_required, logout_user
-from .models import User, Post, CodeDistribution, Task
+from werkzeug.utils import secure_filename
+from .models import User, Post, CodeDistribution, Task, FileUpload
 from .forms import LoginForm
 from .extensions import db
-import difflib
+import difflib, os
 
 bp = Blueprint('main', __name__)
 
@@ -120,5 +121,33 @@ def view_code_diffs():
 @login_required
 def list_tasks():
     tasks = Task.query.all()
+    for task in tasks:
+        task.upload = FileUpload.query.filter_by(task_id=task.id, user_id=current_user.id).first()
     return render_template('tasks.html', tasks=tasks)
 
+@bp.route('/tasks/<int:task_id>/upload', methods=['GET', 'POST'])
+@login_required
+def upload_file(task_id):
+    task = Task.query.get_or_404(task_id)
+    if not task.is_active:
+        flash('This task is currently inactive and cannot accept uploads.', 'warning')
+        return redirect(url_for('main.list_tasks'))
+
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            existing_upload = FileUpload.query.filter_by(user_id=current_user.id, task_id=task_id).first()
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            if existing_upload:
+                os.remove(existing_upload.filepath)
+                existing_upload.filename = filename
+                existing_upload.filepath = filepath
+            else:
+                upload = FileUpload(filename=filename, filepath=filepath, user_id=current_user.id, task_id=task_id)
+                db.session.add(upload)
+            file.save(filepath)
+            db.session.commit()
+            flash('File uploaded successfully', 'success')
+            return redirect(url_for('main.list_tasks'))
+    return redirect(url_for('main.list_tasks'))
