@@ -64,7 +64,7 @@ def new_task():
 def list_tasks():
     if not current_user.role == Role.ADMIN:
         return redirect(url_for('main.index'))
-    tasks = Task.query.all()
+    tasks = Task.query.order_by(Task.is_active.desc(), Task.timestamp.desc()).all()
     users = User.query.all()
     for task in tasks:
         task.uploads = []

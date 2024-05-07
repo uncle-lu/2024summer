@@ -15,7 +15,7 @@
             <tr>
                 <th scope="col">任务名称</th>
                 <th scope="col">任务描述</th>
-                <th scope="col">状态</th>
+                <th scope="col">任务状态</th>
                 <th scope="col">操作</th>
             </tr>
         </thead>
@@ -24,10 +24,10 @@
             <tr>
                 <td>{{ task.title }}</td>
                 <td>{{ task.description }}</td>
-                {% if task.upload %}
-                    <td>已上传</td>
+                {% if task.is_active %}
+                    <td><ins>启用任务</ins></td>
                 {% else%}
-                    <td>未上传</td>
+                    <td>关闭任务</td>
                 {% endif %}
                 <td>
                     <button class="contrast" data-target="{{ task.id }}" onclick="toggleModal(event)">

@@ -120,7 +120,7 @@ def view_code_diffs():
 @bp.route('/tasks')
 @login_required
 def list_tasks():
-    tasks = Task.query.all()
+    tasks = Task.query.order_by(Task.is_active.desc(), Task.timestamp.desc()).all()
     for task in tasks:
         task.upload = FileUpload.query.filter_by(task_id=task.id, user_id=current_user.id).first()
     return render_template('tasks.html', tasks=tasks)
