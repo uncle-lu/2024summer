@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
-from .models import User, Post, CodeDistribution
+from .models import User, Post, CodeDistribution, Task
 from .forms import LoginForm
 from .extensions import db
 import difflib
@@ -115,3 +115,10 @@ def view_code_diffs():
             )
             diff_html = '\n'.join(diff)
     return render_template('view_code_diffs.html', code_diffs=code_diffs, selected_diff=selected_diff, diff_html=diff_html)
+
+@bp.route('/tasks')
+@login_required
+def list_tasks():
+    tasks = Task.query.all()
+    return render_template('tasks.html', tasks=tasks)
+

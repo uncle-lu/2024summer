@@ -5,24 +5,22 @@
 {% block content %}
 <main class="container pico">
   <article>
-    <div>
-      <hgroup>
-        <h1>登录</h1>
-        <p>请登录 2024 Summer 系统</p>
-      </hgroup>
-      <form action="{{ url_for('main.login') }}" method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-          {{ form.username.label() }}
-          {{ form.username() }}
-        </p>
-        <p>
-          {{ form.password.label() }}
-          {{ form.password() }}
-        </p>
-        <p>{{ form.submit() }}</p>
-      </form>
-    </div>
+    <hgroup>
+      <h1>登录</h1>
+      <p>请登录 2024 Summer 系统</p>
+    </hgroup>
+    <form action="{{ url_for('main.login') }}" method="POST">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.username.label() }}
+        {{ form.username() }}
+      </p>
+      <p>
+        {{ form.password.label() }}
+        {{ form.password() }}
+      </p>
+      <p>{{ form.submit() }}</p>
+    </form>
   </article>
 </main>
 {% endblock %}

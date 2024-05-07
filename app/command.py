@@ -21,7 +21,7 @@ def read_file_to_string(file_path):
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
-    from .models import User, Post, Role, CodeDistribution
+    from .models import User, Post, Role, CodeDistribution, Task
     db.drop_all()
     db.create_all()
 
@@ -58,6 +58,13 @@ def init_db_command():
         for _ in range(5)
     ]
     db.session.add_all(codes)
+    db.session.commit()
+
+    tasks = [
+        Task(title=fake.user_name(), description=fake.sentence())
+        for _ in range(10)
+    ]
+    db.session.add_all(tasks)
     db.session.commit()
 
     click.echo('Initialized the database.')

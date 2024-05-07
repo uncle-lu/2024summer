@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}任务列表{% endblock %}
+
+{% block content %}
+<main class="container pico">
+    <h1>任务列表</h1>
+    {% if user and user.is_admin() %}
+    <a href="{{ url_for('myadmin.new_task') }}">创建新任务</a>
+    {% endif %}
+    <p>按照课程进度发布上传任务，请及时上传。</p>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">任务名称</th>
+                <th scope="col">任务描述</th>
+                <th scope="col">上传</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in tasks %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.description }}</td>
+                <td>上传</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}

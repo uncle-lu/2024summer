@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g
 from flask_login import login_required, current_user
-from .models import User, CodeDistribution, Role
+from .models import User, CodeDistribution, Role, Task
+from .forms import TaskForm
 from .extensions import db
 from datetime import datetime, timezone
 
@@ -43,3 +44,17 @@ def publish_code():
 
     users = User.query.all()
     return render_template('publish_code.html', users=users)
+
+@admin_bp.route('/tasks/new', methods=['GET', 'POST'])
+@login_required
+def new_task():
+    if not current_user.role == Role.ADMIN:
+        return redirect(url_for('main.index'))
+    form = TaskForm()
+    if form.validate_on_submit():
+        task = Task(title=form.title.data, description=form.description.data)
+        db.session.add(task)
+        db.session.commit()
+        flash('Task has been created', 'success')
+        return redirect(url_for('main.list_tasks'))
+    return render_template('create_task.html', form=form)

@@ -42,3 +42,18 @@ class CodeDistribution(db.Model):
     description = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    is_active = db.Column(db.Boolean, default=True)
+
+class FileUpload(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    filepath = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
+    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))

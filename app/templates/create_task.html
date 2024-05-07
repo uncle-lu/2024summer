@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}新建任务{% endblock %}
+
+{% block content %}
+<main class="container pico">
+    <article>
+        <hgroup>
+            <h1>新建任务</h1>
+            <p>发布新的文件上传任务</p>
+        </hgroup>
+        <form action="{{ url_for('myadmin.new_task') }}" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                {{ form.title.label() }}
+                {{ form.title() }}
+                {{ form.description.label() }}
+                {{ form.description() }}
+                {{ form.submit() }}
+            </fieldset>
+        </form>
+    </article>
+</main>
+{% endblock %}
