@@ -35,6 +35,6 @@
 
 ## 缩略图
 
-| 首页 | 博文编辑 | 编辑博文 | 查看比对 | 文件上传任务 |
+| 首页 | 博客 | 编辑博文 | 查看比对 | 文件上传任务 |
 | --- | --- | --- | --- | --- |
 | ![首页](screenshot/1.jpeg) | ![博文](screenshot/2.jpeg) | ![编辑博文](screenshot/2-1.jpeg) | ![查看代码比对](screenshot/3.jpeg) | ![文件上传任务](screenshot/4.jpeg) |
