@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint, g, jsonify, current_app, abort, send_file
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
-from .models import User, Post, CodeDistribution, Task, FileUpload
+from .models import User, Post, CodeDistribution, Task, FileUpload, Role
 from .forms import LoginForm
 from .extensions import db
 import difflib, os
@@ -129,7 +129,7 @@ def list_tasks():
 @login_required
 def download_file(file_id):
     file = FileUpload.query.get_or_404(file_id)
-    if file.user_id != current_user.id:
+    if file.user_id != current_user.id and current_user.role != Role.ADMIN:
         abort(403)
     file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
     if not os.path.exists(file_path):
@@ -152,6 +152,8 @@ def upload_file(task_id):
         file = request.files['file']
         if file:
             existing_upload = FileUpload.query.filter_by(user_id=current_user.id, task_id=task_id).first()
+            if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
+                os.mkdir(current_app.config['UPLOAD_FOLDER'])
             filename = secure_filename(file.filename)
             filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             if existing_upload:

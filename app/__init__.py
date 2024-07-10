@@ -5,7 +5,7 @@ from flask_admin import Admin
 from .extensions import db, login_manager
 from .admin import MyModelView, MyAdminIndexView, PostModelView
 from .models import User, Post, CodeDistribution
-from .command import init_db_command
+from .command import init_db_command, create_user_command
 
 
 def create_app():
@@ -29,4 +29,5 @@ def create_app():
     admin.add_view(MyModelView(CodeDistribution, db.session))
 
     app.cli.add_command(init_db_command)
+    app.cli.add_command(create_user_command)
     return app

@@ -64,7 +64,7 @@
                 <td> {{ item['user'].username }} </td>
                 <td>
                 {% if item['isload'] %}
-                    已经上传
+                    <a href="{{ url_for('main.download_file', file_id=item['isload'].id)}}">已经上传</a>
                 {% else %}
                     未上传
                 {% endif %}

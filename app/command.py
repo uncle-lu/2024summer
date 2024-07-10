@@ -68,3 +68,16 @@ def init_db_command():
     db.session.commit()
 
     click.echo('Initialized the database.')
+
+@click.command('create-user')
+@click.argument("name")
+def create_user_command(name):
+    from .models import User, Role
+
+    password = fake.password(length=5, special_chars=False, digits=False, upper_case=False, lower_case=True)
+
+    user = User(username=name, role=Role.USER, password_hash=generate_password_hash(password))
+    db.session.add(user)
+    db.session.commit()
+
+    click.echo('user:' + name + ' password: ' + password)
