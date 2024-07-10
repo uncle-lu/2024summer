@@ -11,6 +11,13 @@ bp = Blueprint('main', __name__)
 def get_all_posts(user_id):
     return Post.query.filter_by(user_id=user_id).order_by(Post.position).all()
 
+def get_all_admin_posts():
+    posts = []
+    admin_user = User.query.filter_by(role=Role.ADMIN).all()
+    for user in admin_user:
+        posts.extend(Post.query.filter_by(user_id=user.id).order_by(Post.position).all())
+    return posts
+
 def get_post(post_id):
     return Post.query.get(post_id)
 
@@ -49,6 +56,16 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@bp.route('/publish_posts')
+@login_required
+def publish_posts():
+    posts = get_all_admin_posts()
+    selected_post = None
+    post_id = request.args.get('post_id')
+    if post_id:
+        selected_post = get_post(post_id)
+    return render_template('publish_posts.html', posts=posts, selected_post=selected_post)
 
 @bp.route('/posts')
 @login_required

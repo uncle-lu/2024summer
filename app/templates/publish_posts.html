@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if selected_post %}
+{{ selected_post.title }}
+{% else %}
+博客列表
+{% endif%}
+{% endblock %}
+
+{% block headlink %}
+<script src="/static/Sortable.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}
+
+{% block content%}
+<main class="container">
+    <div class="grid">
+        <aside class="pico">
+            <h3>公开内容</h3>
+            <div id="posts-list">
+                {% for post in posts %}
+                <div class="post-item" data-id="{{ post.id }}">
+                    <a class="post-a" href="{{ url_for('main.publish_posts', post_id=post.id) }}">{{ post.title }}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+        <section>
+            {% block main_content %}
+                {% if selected_post %}
+                <div class="pico">
+                    <h1>{{ selected_post.title }}</h1>
+                    <textarea id="markdown-content" style="display:none;">{{ selected_post.body }}</textarea>
+                    <article id="markdown-view"></article>
+                </div>
+                {% else %}
+                <h1>此页面</h1>
+                <p>此页面为课堂中公开的课堂内容，如笔记、代码、重要知识点等。</p>
+                {% endif %}
+            {% endblock %}
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+{% if selected_post %}
+<script>
+var markdownText = document.getElementById('markdown-content').value;
+var dirtyHtml = marked.parse(markdownText);
+var cleanHtml = DOMPurify.sanitize(dirtyHtml);
+document.getElementById('markdown-view').innerHTML = cleanHtml;
+</script>
+{% endif %}
+{% endblock %}
