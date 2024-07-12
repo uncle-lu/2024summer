@@ -4,9 +4,11 @@ from werkzeug.utils import secure_filename
 from .models import User, Post, CodeDistribution, Task, FileUpload, Role
 from .forms import LoginForm
 from .extensions import db
+from faker import Faker
 import difflib, os
 
 bp = Blueprint('main', __name__)
+fake = Faker()
 
 def get_all_posts(user_id):
     return Post.query.filter_by(user_id=user_id).order_by(Post.position).all()
@@ -171,7 +173,7 @@ def upload_file(task_id):
             existing_upload = FileUpload.query.filter_by(user_id=current_user.id, task_id=task_id).first()
             if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
                 os.mkdir(current_app.config['UPLOAD_FOLDER'])
-            filename = secure_filename(file.filename)
+            filename = secure_filename(fake.pystr() + file.filename)
             filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             if existing_upload:
                 os.remove(existing_upload.filepath)
