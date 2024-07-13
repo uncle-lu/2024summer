@@ -16,6 +16,18 @@
 <link rel="stylesheet" href="/static/github.css">
 <script src="/static/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+<script type="text/javascript" id="MathJax-script" async src="/static/tex-svg.js">
+</script>
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+</script>
 {% endblock %}
 
 {% block content%}

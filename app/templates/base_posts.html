@@ -16,6 +16,18 @@
 <link rel="stylesheet" href="/static/github.css">
 <script src="/static/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+<script type="text/javascript" id="MathJax-script" async src="/static/tex-svg.js">
+</script>
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+</script>
 {% endblock %}
 
 {% block content%}
@@ -38,17 +50,17 @@
         </aside>
         <section>
             {% block main_content %}
-                {% if selected_post %}
-                <div class="pico">
-                    <h1>{{ selected_post.title }}</h1>
-                    <textarea id="markdown-content" style="display:none;">{{ selected_post.body }}</textarea>
-                    <article id="markdown-view"></article>
-                    <a href="{{ url_for('main.edit_post', post_id=selected_post.id) }}" class="btn btn-secondary">Edit</a>
-                </div>
-                {% else %}
-                <h1>为什么要写博客？</h1>
-                <p>信息学奥赛是一门「数学」、「编码」集合一体的体育竞赛。所以在学习的过程中总结与复习是非常重要的。写博客或者说写总结就是一个反思与复习的过程。</p>
-                {% endif %}
+            {% if selected_post %}
+            <div class="pico">
+                <h1>{{ selected_post.title }}</h1>
+                <textarea id="markdown-content" style="display:none;">{{ selected_post.body }}</textarea>
+                <article id="markdown-view"></article>
+                <a href="{{ url_for('main.edit_post', post_id=selected_post.id) }}" class="btn btn-secondary">Edit</a>
+            </div>
+            {% else %}
+            <h1>为什么要写博客？</h1>
+            <p>信息学奥赛是一门「数学」、「编码」集合一体的体育竞赛。所以在学习的过程中总结与复习是非常重要的。写博客或者说写总结就是一个反思与复习的过程。</p>
+            {% endif %}
             {% endblock %}
         </section>
     </div>
@@ -79,10 +91,10 @@
 </script>
 {% if selected_post %}
 <script>
-var markdownText = document.getElementById('markdown-content').value;
-var dirtyHtml = marked.parse(markdownText);
-var cleanHtml = DOMPurify.sanitize(dirtyHtml);
-document.getElementById('markdown-view').innerHTML = cleanHtml;
+    var markdownText = document.getElementById('markdown-content').value;
+    var dirtyHtml = marked.parse(markdownText);
+    var cleanHtml = DOMPurify.sanitize(dirtyHtml);
+    document.getElementById('markdown-view').innerHTML = cleanHtml;
 </script>
 {% endif %}
 {% endblock %}
